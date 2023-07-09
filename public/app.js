@@ -1,5 +1,5 @@
-const reduce_amount = 5
-const starting_size = 40
+const reduce_amount = 10
+const starting_size = 50
 
 let sample_size = starting_size
 let currentBlob
@@ -62,7 +62,7 @@ window.onload = loadImage
 
 document.getElementById("guess-form").addEventListener("submit", function (event) {
     event.preventDefault()
-    const guess = document.getElementById("guess-input").value
+    const guess = document.getElementById("guess-input").value.toLowerCase()
 
     if (guess === currentImageString) {
         var img = document.getElementById("display-image")

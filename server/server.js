@@ -22,6 +22,8 @@ app.get("/random-image", (req, res) => {
         const randomIndex = Math.floor(Math.random() * imageFiles.length)
         const randomImage = imageFiles[randomIndex]
 
+        console.log(randomImage)
+
         // Get the unique string for the random image
         const randomImageString = imageStrings[randomImage]
 
