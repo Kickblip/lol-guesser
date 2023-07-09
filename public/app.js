@@ -1,4 +1,7 @@
-let sample_size = 25
+const reduce_amount = 5
+const starting_size = 40
+
+let sample_size = starting_size
 let currentBlob
 let currentImageString
 
@@ -47,7 +50,6 @@ function loadImage() {
     fetch("/random-image")
         .then((response) => {
             currentImageString = response.headers.get("X-Image-String") // save the current image string
-            console.log(currentImageString)
             return response.blob()
         })
         .then((blob) => {
@@ -61,22 +63,38 @@ window.onload = loadImage
 document.getElementById("guess-form").addEventListener("submit", function (event) {
     event.preventDefault()
     const guess = document.getElementById("guess-input").value
+
     if (guess === currentImageString) {
-        alert("Correct!")
+        var img = document.getElementById("display-image")
+        var rect = img.getBoundingClientRect()
+
+        confetti({
+            particleCount: 200,
+            spread: 100,
+            origin: {
+                y: rect.bottom / window.innerHeight,
+                x: rect.left / window.innerWidth,
+            },
+        })
+
+        setTimeout(function () {
+            confetti.reset()
+        }, 2000) // clear the confetti after 2 seconds
+
         document.getElementById("guess-input").value = ""
-        sample_size = 25
+        sample_size = starting_size
         loadImage()
     } else {
-        alert("Incorrect. Try again.")
+        const image = document.getElementById("display-image")
+
+        image.classList.add("jiggle")
+
+        setTimeout(function () {
+            image.classList.remove("jiggle")
+        }, 1000) // remove the jiggle class after 2 seconds
+
         document.getElementById("guess-input").value = ""
-        sample_size = Math.max(1, sample_size - 3)
+        sample_size = Math.max(1, sample_size - reduce_amount)
         drawImageFromBlob(currentBlob) // redraw the current image
     }
 })
-
-// document.getElementById("hint-btn").addEventListener("click", function () {
-//     // Decrease the sample size by 5 (or any amount) when hint is clicked
-//     // Prevent the sample_size from going below 1
-//     sample_size = Math.max(1, sample_size - 3)
-//     drawImageFromBlob(currentBlob) // redraw the current image
-// })
