@@ -1,4 +1,4 @@
-let sample_size = 60
+let sample_size = 25
 let currentBlob
 let currentImageString
 
@@ -58,18 +58,13 @@ function loadImage() {
 
 window.onload = loadImage
 
-// document.getElementById("submit-btn").addEventListener("click", function () {
-//     // Reset the sample_size every time a new image is loaded
-//     sample_size = 40
-//     loadImage()
-// })
-
 document.getElementById("guess-form").addEventListener("submit", function (event) {
     event.preventDefault()
     const guess = document.getElementById("guess-input").value
     if (guess === currentImageString) {
         alert("Correct!")
-        sample_size = 40
+        document.getElementById("guess-input").value = ""
+        sample_size = 25
         loadImage()
     } else {
         alert("Incorrect. Try again.")
@@ -81,6 +76,6 @@ document.getElementById("guess-form").addEventListener("submit", function (event
 document.getElementById("hint-btn").addEventListener("click", function () {
     // Decrease the sample size by 5 (or any amount) when hint is clicked
     // Prevent the sample_size from going below 1
-    sample_size = Math.max(1, sample_size - 5)
+    sample_size = Math.max(1, sample_size - 2)
     drawImageFromBlob(currentBlob) // redraw the current image
 })

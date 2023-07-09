@@ -16,8 +16,11 @@ app.get("/random-image", (req, res) => {
             return res.status(500).send("Server Error")
         }
 
-        const randomIndex = Math.floor(Math.random() * files.length)
-        const randomImage = files[randomIndex]
+        // Filter the files to exclude '.DS_Store'
+        const imageFiles = files.filter((file) => file !== ".DS_Store")
+
+        const randomIndex = Math.floor(Math.random() * imageFiles.length)
+        const randomImage = imageFiles[randomIndex]
 
         // Get the unique string for the random image
         const randomImageString = imageStrings[randomImage]
