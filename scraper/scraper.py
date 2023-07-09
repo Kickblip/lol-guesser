@@ -1,46 +1,19 @@
-import requests
-from bs4 import BeautifulSoup
-import urllib.request
-import os
 import json
 
-# Set the path constants
-images_dir = "../public/images"
-json_path = "../server/answers.json"
+def format_names(filename):
+    formatted_names = {}
+    
+    with open(filename, 'r') as file:
+        names = file.read().splitlines()  # splitlines() method splits a string into a list where each line is an element
+        
+        for name in names:
+            formatted_name = "{}_OriginalSkin.webp".format(name.capitalize())
+            formatted_names[formatted_name] = name.lower()
+            
+    return formatted_names
 
-# Make sure the images directory exists
-os.makedirs(images_dir, exist_ok=True)
+names_dict = format_names('names.txt')
 
-# Initialize an empty dict to hold the JSON data
-json_data = {}
-
-# Read the text file
-with open("names.txt", "r") as file:
-    names = [line.strip() for line in file]
-
-# Loop over the names
-for name in names:
-    # Navigate to the URL
-    url = f"https://leagueoflegends.fandom.com/wiki/{name}/LoL/Cosmetics"
-    response = requests.get(url)
-
-    # Parse the HTML
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    # Find the image with the specific alt property
-    image = soup.find("img", alt=f"{name} OriginalSkin")
-
-    # Check if image exists
-    if image is not None:
-        image_url = image['src']
-
-        # Download the image
-        filename = f"{name}.png"
-        urllib.request.urlretrieve(image_url, os.path.join(images_dir, filename))
-
-        # Store the filename and name in the JSON data
-        json_data[filename] = name
-
-# Save the JSON data
-with open(json_path, "w") as file:
-    json.dump(json_data, file, indent=4)
+# Save to json file
+with open('names.json', 'w') as json_file:
+    json.dump(names_dict, json_file, indent=4)

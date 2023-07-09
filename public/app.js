@@ -68,14 +68,15 @@ document.getElementById("guess-form").addEventListener("submit", function (event
         loadImage()
     } else {
         alert("Incorrect. Try again.")
-        sample_size = Math.max(1, sample_size - 5)
+        document.getElementById("guess-input").value = ""
+        sample_size = Math.max(1, sample_size - 3)
         drawImageFromBlob(currentBlob) // redraw the current image
     }
 })
 
-document.getElementById("hint-btn").addEventListener("click", function () {
-    // Decrease the sample size by 5 (or any amount) when hint is clicked
-    // Prevent the sample_size from going below 1
-    sample_size = Math.max(1, sample_size - 2)
-    drawImageFromBlob(currentBlob) // redraw the current image
-})
+// document.getElementById("hint-btn").addEventListener("click", function () {
+//     // Decrease the sample size by 5 (or any amount) when hint is clicked
+//     // Prevent the sample_size from going below 1
+//     sample_size = Math.max(1, sample_size - 3)
+//     drawImageFromBlob(currentBlob) // redraw the current image
+// })
