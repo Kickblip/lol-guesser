@@ -64,7 +64,10 @@ document.getElementById("guess-form").addEventListener("submit", function (event
     event.preventDefault()
     const guess = document.getElementById("guess-input").value.toLowerCase()
 
-    if (guess === currentImageString) {
+    // strip the guess of spaces, numbers, and special characters
+    const strippedGuess = guess.replace(/[^a-z]/g, "")
+
+    if (strippedGuess === currentImageString) {
         var img = document.getElementById("display-image")
         var rect = img.getBoundingClientRect()
 
