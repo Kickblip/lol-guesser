@@ -37,7 +37,7 @@ function drawImageFromBlob(blob) {
                     }
                 }
 
-                // Here we update the existing image source with the pixelated image data
+                // here we update the existing image source with the pixelated image data
                 document.getElementById("display-image").src = c.toDataURL("image/jpeg")
             }
 
@@ -94,7 +94,7 @@ document.getElementById("guess-form").addEventListener("submit", function (event
 
         setTimeout(function () {
             image.classList.remove("jiggle")
-        }, 1000) // remove the jiggle class after 2 seconds
+        }, 1000)
 
         document.getElementById("guess-input").value = ""
         sample_size = Math.max(1, sample_size - reduce_amount)
