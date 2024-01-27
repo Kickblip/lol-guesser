@@ -13,12 +13,15 @@ const imageStrings = require("./champs.json")
 app.use(express.json())
 app.use(express.static(path.join(__dirname, "..", "public")))
 
+app.get("/num-champs", (req, res) => {
+    const champCount = Object.keys(imageStrings).length
+    res.send(champCount.toString())
+})
 
 //stores what the client has currently rolled to the variable checkRepeat
 let checkRepeat
 
-//when you get a api request with post, do this
-app.post('/random-image', (req, res) =>{
+app.post("/random-image", (req, res) => {
     checkRepeat = req.body
     fs.readdir(path.join(__dirname, "..", "public", "images"), (err, files) => {
         if (err) {
@@ -27,7 +30,7 @@ app.post('/random-image', (req, res) =>{
 
         // filter the files to exclude '.DS_Store'
         let imageFiles = files.filter((file) => file !== ".DS_Store")
-        
+
         // pick a random json entry (contains image file name and answer)
         let randomIndex = Math.floor(Math.random() * imageFiles.length)
         let randomImage = imageFiles[randomIndex]
@@ -35,13 +38,13 @@ app.post('/random-image', (req, res) =>{
         // this is the string the user will have to guess (e.g. 'aatrox')
         let randomImageString = imageStrings[randomImage]
 
-        while(true){
-            if(checkRepeat.includes(randomImageString)){
+        while (true) {
+            if (checkRepeat.includes(randomImageString)) {
                 imageFiles = files.filter((file) => file !== ".DS_Store")
                 randomIndex = Math.floor(Math.random() * imageFiles.length)
                 randomImage = imageFiles[randomIndex]
                 randomImageString = imageStrings[randomImage]
-            }else{
+            } else {
                 break
             }
         }

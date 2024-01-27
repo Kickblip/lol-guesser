@@ -1,11 +1,12 @@
 const reduce_amount = 10
 const starting_size = 50
-const WINS = document.getElementById("winStreakId") 
+const WINS = document.getElementById("winStreakId")
 
 let sample_size = starting_size
 let currentBlob
 let currentImageString
-let winStreak = 0 
+let winStreak = 0
+let num_champs = 0
 WINS.innerHTML = winStreak
 
 // takes a blob (Binary Large OBject), pixelates it, and updates the HTML file with the new image
@@ -54,26 +55,53 @@ function drawImageFromBlob(blob) {
 // requests an image blob and answer string from the server
 let checkRepeat = []
 function loadImage() {
+    if (checkRepeat.length && checkRepeat.length === num_champs) {
+        checkRepeat = []
+    }
+
     fetch("/random-image", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         },
-        body: JSON.stringify(checkRepeat)
+        body: JSON.stringify(checkRepeat),
     })
-    .then((response) => {
-        currentImageString = response.headers.get("X-Image-String") // save the answer string from the headers
-        checkRepeat.push(currentImageString)
-        return response.blob()
-    })
-    .then((blob) => {
-        currentBlob = blob // save the image blob
-        return drawImageFromBlob(blob) // draw the image on the HTML using the blob
-    })
-    
+        .then((response) => {
+            currentImageString = response.headers.get("X-Image-String") // save the answer string from the headers
+            checkRepeat.push(currentImageString)
+            return response.blob()
+        })
+        .then((blob) => {
+            currentBlob = blob // save the image blob
+            return drawImageFromBlob(blob) // draw the image on the HTML using the blob
+        })
 }
 
-window.onload = loadImage
+function getNumChamps() {
+    fetch("/num-champs")
+        .then((response) => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok")
+            }
+            return response.text()
+        })
+        .then((data) => {
+            num_champs = data
+            console.log(`Number of champions: ${num_champs}`)
+            WINS.innerHTML = `${winStreak} / ${num_champs}`
+        })
+        .catch((error) => {
+            num_champs = 167
+            console.error("There has been a problem with your fetch operation:", error)
+        })
+}
+
+function load() {
+    getNumChamps()
+    loadImage()
+}
+
+window.onload = load
 
 // add a listener to the guess-form input box that is fired when they submit it
 document.getElementById("guess-form").addEventListener("submit", function (event) {
@@ -92,7 +120,7 @@ document.getElementById("guess-form").addEventListener("submit", function (event
 
         //add 1 to winstreak, and make the text green
         winStreak = winStreak + 1
-        WINS.innerHTML = winStreak
+        WINS.innerHTML = `${winStreak} / ${num_champs}`
         WINS.classList.add("fadeWin")
 
         // confetti animation from library (not important)
@@ -115,15 +143,16 @@ document.getElementById("guess-form").addEventListener("submit", function (event
         loadImage()
     } else {
         const image = document.getElementById("display-image")
-        const WINS = document.getElementById("winStreakId") 
+        const WINS = document.getElementById("winStreakId")
 
         //reset winstreak
         winStreak = 0
-        
+        checkRepeat = []
+
         // CSS animation jiggles the image when they are wrong
         image.classList.add("jiggle")
         WINS.classList.add("fadeLoss")
-        WINS.innerHTML = winStreak
+        WINS.innerHTML = `${winStreak} / ${num_champs}`
 
         setTimeout(function () {
             image.classList.remove("jiggle")
