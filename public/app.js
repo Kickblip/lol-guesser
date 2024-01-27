@@ -1,9 +1,12 @@
 const reduce_amount = 10
 const starting_size = 50
+const WINS = document.getElementById("winStreakId") 
 
 let sample_size = starting_size
 let currentBlob
 let currentImageString
+let winStreak = 0 
+WINS.innerHTML = winStreak
 
 // takes a blob (Binary Large OBject), pixelates it, and updates the HTML file with the new image
 // the image blobs come from the server
@@ -49,16 +52,25 @@ function drawImageFromBlob(blob) {
 }
 
 // requests an image blob and answer string from the server
+let checkRepeat = []
 function loadImage() {
-    fetch("/random-image")
-        .then((response) => {
-            currentImageString = response.headers.get("X-Image-String") // save the answer string from the headers
-            return response.blob()
-        })
-        .then((blob) => {
-            currentBlob = blob // save the image blob
-            return drawImageFromBlob(blob) // draw the image on the HTML using the blob
-        })
+    fetch("/random-image", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(checkRepeat)
+    })
+    .then((response) => {
+        currentImageString = response.headers.get("X-Image-String") // save the answer string from the headers
+        checkRepeat.push(currentImageString)
+        return response.blob()
+    })
+    .then((blob) => {
+        currentBlob = blob // save the image blob
+        return drawImageFromBlob(blob) // draw the image on the HTML using the blob
+    })
+    
 }
 
 window.onload = loadImage
@@ -78,6 +90,11 @@ document.getElementById("guess-form").addEventListener("submit", function (event
         var img = document.getElementById("display-image")
         var rect = img.getBoundingClientRect()
 
+        //add 1 to winstreak, and make the text green
+        winStreak = winStreak + 1
+        WINS.innerHTML = winStreak
+        WINS.classList.add("fadeWin")
+
         // confetti animation from library (not important)
         confetti({
             particleCount: 200,
@@ -90,20 +107,28 @@ document.getElementById("guess-form").addEventListener("submit", function (event
 
         setTimeout(function () {
             confetti.reset()
-        }, 2000) // clear the confetti after 2 seconds
+            WINS.classList.remove("fadeWin")
+        }, 2000) // clear the confetti and green text after 2 seconds
 
         document.getElementById("guess-input").value = ""
         sample_size = starting_size
         loadImage()
     } else {
         const image = document.getElementById("display-image")
+        const WINS = document.getElementById("winStreakId") 
 
+        //reset winstreak
+        winStreak = 0
+        
         // CSS animation jiggles the image when they are wrong
         image.classList.add("jiggle")
+        WINS.classList.add("fadeLoss")
+        WINS.innerHTML = winStreak
 
         setTimeout(function () {
             image.classList.remove("jiggle")
-        }, 1000) // remove the jiggle class after some time to make it stop
+            WINS.classList.remove("fadeLoss")
+        }, 1000) // remove the jiggle class after some time to make it stop after 300 ms
 
         document.getElementById("guess-input").value = "" // clear the guess input field
         sample_size = Math.max(1, sample_size - reduce_amount)
