@@ -68,32 +68,32 @@ body {
     background-color: #0056b3;
 }
 
-.streak{
-    font-size: 30px;
-    padding: 0px;
-    margin: 0px;
+.streak-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: auto;
+    width: fit-content;
 }
 
-#winStreakId{
-    font-size: 35px;
-    margin: 10px;
+#winStreakId {
+    font-size: 24px;
+    margin: 5px;
 }
 
 .fadeLoss {
     color: red;
-    animation: jiggle 0.3s ease;   
+    animation: jiggle 0.3s ease;
 }
 
 .fadeWin {
     color: rgb(104, 233, 104);
 }
 
-
 .jiggle {
     animation: jiggle 0.3s infinite;
 }
-
-
 
 @keyframes jiggle {
     0% {

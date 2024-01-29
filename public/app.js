@@ -1,6 +1,7 @@
 const reduce_amount = 10
 const starting_size = 50
 const WINS = document.getElementById("winStreakId")
+const WINS_ICON = document.getElementById("winStreakIcon")
 
 let sample_size = starting_size
 let currentBlob
@@ -122,6 +123,7 @@ document.getElementById("guess-form").addEventListener("submit", function (event
         winStreak = winStreak + 1
         WINS.innerHTML = `${winStreak} / ${num_champs}`
         WINS.classList.add("fadeWin")
+        WINS_ICON.classList.add("fadeWin")
 
         // confetti animation from library (not important)
         confetti({
@@ -136,6 +138,7 @@ document.getElementById("guess-form").addEventListener("submit", function (event
         setTimeout(function () {
             confetti.reset()
             WINS.classList.remove("fadeWin")
+            WINS_ICON.classList.remove("fadeWin")
         }, 2000) // clear the confetti and green text after 2 seconds
 
         document.getElementById("guess-input").value = ""
@@ -152,11 +155,13 @@ document.getElementById("guess-form").addEventListener("submit", function (event
         // CSS animation jiggles the image when they are wrong
         image.classList.add("jiggle")
         WINS.classList.add("fadeLoss")
+        WINS_ICON.classList.add("fadeLoss")
         WINS.innerHTML = `${winStreak} / ${num_champs}`
 
         setTimeout(function () {
             image.classList.remove("jiggle")
             WINS.classList.remove("fadeLoss")
+            WINS_ICON.classList.remove("fadeLoss")
         }, 1000) // remove the jiggle class after some time to make it stop after 300 ms
 
         document.getElementById("guess-input").value = "" // clear the guess input field
